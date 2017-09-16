@@ -1,0 +1,15 @@
+{
+    "name": "sqlmap",
+    "version": "0.0.1",
+    "license": "MIT",
+    "main": "src/sqlmap.js",
+    "dependencies": {
+        "antlr4": "^4.7.0",
+        "bluebird": "^3.5.0",
+        "mysql": "^2.14.1"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node .\\test\\loader\\test.js"
+    }
+}
