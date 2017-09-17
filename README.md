@@ -17,7 +17,7 @@ Simple SQL mapper engine for Node.js.
 
 ### SQL definition line
 
-> #select[#insert, #update, #delete, #sql] SQLID:
+> \#select[#insert, #update, #delete, #sql] SQLID:
 
 #### SQL ID
 
@@ -43,7 +43,7 @@ The "?" can be in the front of parameter name as ?param or ??param as your like.
 
 #### Include a SQL by SQLID
 
-> #include SQLID
+> \#include SQLID
 
 The SQL with SQLID will be replace in the position of the #include line.
 
