@@ -4,7 +4,6 @@ Simple SQL mapper engine for Node.js.<br>
 
 ## SQL map syntax
 <code>
-<pre>
 #select user.query:
     select * from user where 1=1
     and id=id?
@@ -12,18 +11,10 @@ Simple SQL mapper engine for Node.js.<br>
     and password=password?
     and email=email?
     and id in (ids?)
-</pre>
 </code>
 
 ### SQL definition line
-> <span style="color: orange">#select</span>[
-    <span style="color: orange">#insert</span>, 
-    <span style="color: orange">#update</span>, 
-    <span style="color: orange">#delete</span>,
-    <span style="color: orange">#sql</span>,] 
-    <span style="color: slateblue">SQLID</span>
-    <span style="color: cyan">:</span>
-
+> #select[#insert, #update, #delete, #sql] SQLID:
 #### SQL ID
 A SQLID is an identify for a SQL.<br>
 You should make sure your SQLID is unique for all SQL definitions.<br>
@@ -31,25 +22,16 @@ You should make sure your SQLID is unique for all SQL definitions.<br>
 ### SQL body
 
 #### Params
-<span style="color: orange">param</span><span style="color: green">?</span><br>
-This stands for a parameter named "param". The "?" means if the "param" is empty(undefined, null, empty string, false, 0), the whole line will be removed from the whole SQL.
-
-<span style="color: orange">param</span><span style="color: green">??</span><br>
-Almost the same as <span style="color: orange">param</span><span style="color: green">?</span>. Two "?" means the parameter value will be escaped as a column or table name when the parameter is filled.<br>
-If the value of <span style="color: orange">param</span> is "userName", then it is escaped as \`userName\` when filled.
-
-The "?" can be in the front of parameter name as 
-<span style="color: green">?</span><span style="color: orange">param</span>
-or
-<span style="color: green">??</span><span style="color: orange">param</span> 
-with your like.
+* param?<br>
+This stands for a parameter named "param". The "?" means if the "param" is empty(undefined, null, empty string, false, 0), the whole line will be removed from the whole SQL.<br>
+* param??<br>
+Almost the same as param?. Two "?" means the parameter value will be escaped as a column or table name when the parameter is filled.<br>
+If the value of param is "userName", then it is escaped as \`userName\` when filled.
+The "?" can be in the front of parameter name as ?param or ??param as your like.
 >Please note that if one line has 2 or more parameters, the line will be removed when any parameter is empty. Multipal parameters in one line have the relationship of "and".
-
 #### Include a SQL by SQLID
-> <span style="color: orange">#include</span> <span style="color: slateblue">SQLID</span><br>
-
-The SQL with SQLID will be replace in the position of the <span style="color: orange">#include</span> line.
-
+> #include SQLID
+The SQL with SQLID will be replace in the position of the #include line.
 <code>
 <pre>
 #sql common.paging:
@@ -70,7 +52,6 @@ The SQL with SQLID will be replace in the position of the <span style="color: or
 </code>
 
 ## API Reference
-
 ### Load SQL maps
 > SQL map files' extension must be ".sql";
 <code>
