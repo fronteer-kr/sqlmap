@@ -3,7 +3,7 @@ Simple SQL mapper engine for Node.js.<br>
 >Only support MySql for now.
 
 ## SQL map syntax
-<code>
+<code><pre>
 #select user.query:
     select * from user where 1=1
     and id=id?
@@ -11,7 +11,7 @@ Simple SQL mapper engine for Node.js.<br>
     and password=password?
     and email=email?
     and id in (ids?)
-</code>
+</pre></code>
 
 ### SQL definition line
 > #select[#insert, #update, #delete, #sql] SQLID:
@@ -30,16 +30,13 @@ If the value of param is "userName", then it is escaped as \`userName\` when fil
 The "?" can be in the front of parameter name as ?param or ??param as your like.
 >Please note that if one line has 2 or more parameters, the line will be removed when any parameter is empty. Multipal parameters in one line have the relationship of "and".
 #### Include a SQL by SQLID
-> #include SQLID
-The SQL with SQLID will be replace in the position of the #include line.
+> #include SQLID<br>
+> The SQL with SQLID will be replace in the position of the #include line.
 <code>
 <pre>
 #sql common.paging:
     order by orderBy?? limit from?, to?
-</pre>
-</code>
-<code>
-<pre>
+
 #select user.query:
     select * from user where 1=1
     and id=id?
@@ -66,7 +63,7 @@ SqlMap.loadSqlMaps(sql_map_file_or_dir_path, function(err, mapContext){
 
 ### Manage connection
 > Only for MySql for now. <br>
-  The connection is pooled and clustered at backend by mysqljs/mysql module.
+> The connection is pooled and clustered at backend by mysqljs/mysql module.
 <code>
 <pre>
 var SqlMap = require('sqlmap');
