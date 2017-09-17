@@ -1,7 +1,7 @@
 # sqlmap
 
 Simple SQL mapper engine for Node.js.
->Only support MySql for now.
+> Only support MySql for now.
 
 ## SQL map syntax
 
@@ -39,7 +39,7 @@ Almost the same as param?. Two "?" means the parameter value will be escaped as 
 
 If the value of param is "userName", then it is escaped as \`userName\` when filled.
 The "?" can be in the front of parameter name as ?param or ??param as your like.
->Please note that if one line has 2 or more parameters, the line will be removed when any parameter is empty. Multipal parameters in one line have the relationship of "and".
+> Please note that if one line has 2 or more parameters, the line will be removed when any parameter is empty. Multipal parameters in one line have the relationship of "and".
 
 #### Include a SQL by SQLID
 
@@ -99,8 +99,7 @@ var slaveConfig = {
 };
 var sqlMap = new SqlMap(masterConfig, [slaveConfig]);
 
-sqlMap.destroy(function(err)
-{
+sqlMap.destroy(function(err) {
     if (err) throw err;
     console.log("Connections destroyed!");
 });
@@ -127,7 +126,8 @@ sqlMap.dQuery("user.query", {
     });
 ```
 
->The generated SQL is:
+> The generated SQL is:
+
 ```sql
 select * from user where 1=1 and id in ('1', 2, 3) order by `userName` limit 0, 100
 ```
@@ -149,4 +149,4 @@ sqlMap.dQuery("select * from user where id in (?) order by ?? limit ? to ?", [
 
 ## Example
 
->Please refer the test/test.js.
+> Please refer the test/test.js.
