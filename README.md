@@ -8,11 +8,11 @@ Simple SQL mapper engine for Node.js.
 ```sql
 #select user.query:
     select * from user where 1=1
-    and id=id?
-    and userName=userName?
-    and password=password?
-    and email=email?
-    and id in (ids?)
+        and id=id?
+        and userName=userName?
+        and password=password?
+        and email=email?
+        and id in (ids?)
 ```
 
 ### SQL definition line
@@ -53,12 +53,12 @@ The SQL with SQLID will be replace in the position of the #include line.
 
 #select user.query:
     select * from user where 1=1
-    and id=id?
-    and userName=userName?
-    and password=password?
-    and email=email?
-    and id in (ids?)
-    #include common.paging
+        and id=id?
+        and userName=userName?
+        and password=password?
+        and email=email?
+        and id in (ids?)
+        #include common.paging
 ```
 
 ## API Reference
