@@ -1,13 +1,13 @@
 var fs = require('fs');
 var util = require('util');
 var mysql = require('mysql');
-var SqlMapLoader = require('./loader/SqlMapLoader');
+var SqlMapLoader = require('./lib/loader/SqlMapLoader');
 const {
     SqlMapSql,
     SqlMapSqlLine,
     SqlMapSqlLineType,
     SqlMapSqlParam
-} = require('./parser/SqlMapSql');
+} = require('./lib/parser/SqlMapSql');
 
 g_sqlMap = {};
 

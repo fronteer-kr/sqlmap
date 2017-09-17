@@ -1,4 +1,4 @@
-var dl = require("../../src/loader/DibLoader");
+var dl = require("../../lib/loader/DibLoader");
 
 var sqlMap = {};
 dl.loadSqlMapFile("C:\\Code\\dib\\test\\parser\\sql.sql", sqlMap);
