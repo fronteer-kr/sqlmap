@@ -79,7 +79,7 @@ SqlMap.loadSqlMaps(sql_map_file_or_dir_path, function(err, mapContext){
 
 > Only for MySql for now.
 
-The connection is pooled and clustered at backend by mysqljs/mysql module.
+The connection is pooled and clustered at backend by [mysqljs/mysql](https://github.com/mysqljs/mysql) module.
 
 ```js
 var SqlMap = require('sqlmap');
@@ -132,7 +132,7 @@ sqlMap.dQuery("user.query", {
 select * from user where 1=1 and id in ('1', 2, 3) order by `userName` limit 0, 100
 ```
 
-#### Native SQL query wrapper for mysqljs/mysql
+#### Native SQL query wrapper for [mysqljs/mysql](https://github.com/mysqljs/mysql)
 
 ```js
 sqlMap.dQuery("select * from user where id in (?) order by ?? limit ? to ?", [
