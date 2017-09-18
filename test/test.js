@@ -9,13 +9,13 @@ var masterConfig = {
 };
 var sqlMap = new SqlMap(masterConfig);
 
-SqlMap.loadSqlMaps(Path.resolve(__dirname, "parser"),
+SqlMap.loadSqlMaps(Path.resolve(__dirname, 'parser'),
     function (err, map) {
-        if(err) throw err;
+        if (err) throw err;
 
-        sqlMap.dQuery("test.sql1", {
-            userName: "root",
-            email: "nxshuiguo@163.com",
+        sqlMap.dQuery('test.sql1', {
+            userName: 'root',
+            email: 'nxshuiguo@163.com',
             ids: ['1', 2, 3],
             orderBy: 'userName',
             from: 0,
@@ -28,7 +28,7 @@ SqlMap.loadSqlMaps(Path.resolve(__dirname, "parser"),
             console.log(fields[1]);
             sqlMap.destroy(function (err) {
                 if (err) throw err;
-                console.log("\nConnections destroyed!");
+                console.log('\nConnections destroyed!');
             });
         });
     });

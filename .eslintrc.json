@@ -1,0 +1,12 @@
+{
+    "extends": "standard",
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "rules": {
+        "semi": "off",
+        "indent": "off",
+        "space-before-function-paren": "off"
+    }
+}
