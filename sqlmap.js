@@ -83,7 +83,6 @@ function getSqlAndValues(sqlId, values) {
             strArr = strArr.concat(ret.sql);
             valueArr = valueArr.concat(ret.values);
         }
-
     }
     return { sql: strArr, values: valueArr };
 }
@@ -101,6 +100,7 @@ SqlMap.prototype.dQuery = function (sqlId, values, callback) {
     console.log('Sql id: ' + sqlId);
     var params = getSqlAndValues(sqlId, values);
     var sql = params.sql.join(' ');
+    console.error(sql);
     querySql(this, sql, params.values, callback);
 };
 

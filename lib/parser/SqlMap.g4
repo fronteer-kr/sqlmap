@@ -1,6 +1,6 @@
 grammar SqlMap;
 
-root: sqlDef*;
+root: sqlDef* NL;
 
 sqlDef: defLine (includeLine | textLine)+;
 
@@ -8,19 +8,19 @@ defLine: sqlType sqlId ':' NL;
 
 includeLine: include sqlId NL;
 
-textLine: (TEXT | param)*? NL;
+include: INCLUDE;
+
+textLine: (TEXT | SQLID | WS | param)*? NL;
 
 sqlType: SQLTYPE;
 
-include: INCLUDE;
-
 param: PARAM;
 
-sqlId: SQLID;
+sqlId: SQLID WS*;
 
-SQLTYPE: '#' ('select' | 'update' | 'insert' | 'delete' | 'sql');
+SQLTYPE: WS* ('#select' | '#update' | '#insert' | '#delete' | '#sql') WS+;
 
-INCLUDE: '#' 'include';
+INCLUDE: WS* '#include' WS+;
 
 PARAM: SQLID '?'
     | SQLID '??'
@@ -39,6 +39,5 @@ fragment DIGIT: [0-9];
 
 NL: '\r'? '\n';
 
-WS: [ \t]+ -> skip;
-
+WS: (' ' | '\t' | EOF)+ -> skip;
  
