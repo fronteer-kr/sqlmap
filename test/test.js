@@ -1,5 +1,5 @@
 var Path = require('path');
-var SqlMap = require('../sqlmap');
+var { SqlMap } = require('../sqlmap');
 
 var masterConfig = {
     host: 'localhost',

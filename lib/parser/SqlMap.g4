@@ -39,5 +39,5 @@ fragment DIGIT: [0-9];
 
 NL: '\r'? '\n';
 
-WS: (' ' | '\t' | EOF)+ -> skip;
+WS: (' ' | '\t')+ -> skip;
  

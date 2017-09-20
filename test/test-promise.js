@@ -1,6 +1,6 @@
 var Path = require('path');
 var Promise = require('bluebird');
-var SqlMap = require('../sqlmap');
+var { SqlMap } = require('../sqlmap');
 Promise.promisifyAll(SqlMap);
 Promise.promisifyAll(SqlMap.prototype);
 
