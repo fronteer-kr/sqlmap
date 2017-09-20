@@ -1,7 +1,7 @@
 {
     "name": "sqlmap",
     "description": "Simple SQL mapper engine for Node.js.",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "license": "MIT",
     "main": "sqlmap.js",
     "author": {
