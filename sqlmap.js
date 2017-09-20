@@ -122,4 +122,4 @@ SqlMap.loadSqlMaps = function (path, callback) {
     });
 }
 
-module.exports = SqlMap;
+module.exports.SqlMap = SqlMap;
