@@ -8,16 +8,18 @@ Simple SQL mapper engine for Node.js.
 ```sql
 #select user.query:
     select * from user where 1=1
-        and id=id?
-        and userName=userName?
-        and password=password?
-        and email=email?
-        and id in (ids?)
+        and id=@id
+        and userName=@userName
+        and password=@password
+        and email=@email
+        and id in (@ids)
 ```
 
 ### SQL definition line
 
 > \#select[#insert, #update, #delete, #sql] SQLID:
+>
+> \#select[#insert, #update, #delete, #sql] SQLID { ... }
 
 #### SQL ID
 
@@ -29,36 +31,59 @@ You should make sure your SQLID is unique for all SQL definitions.
 
 #### Params
 
-* param?
+* @param or @@param
 
-This stands for a parameter named "param". The "?" means if the "param" is empty(undefined, null, empty string, false, 0), the whole line will be removed from the whole SQL.
+This stands for a parameter named "param". One '@' means the param is optional, two '@'s means the param is mandatory.
 
-* param??
+>The sql body is recognized as lines.
+>
+>If there are parameters in one line, when paramters being filled:
+>> if all parameters are optional, the line will be removed when any paramter is empty(undefined, null, empty string, false, 0)
+>>
+>> if any parameter is mandatory, the line will not be removed
 
-Almost the same as param?. Two "?" means the parameter value will be escaped as a column or table name when the parameter is filled.
+* @param@ or @@param@
 
-If the value of param is "userName", then it is escaped as \`userName\` when filled.
-The "?" can be in the front of parameter name as ?param or ??param as your like.
-> Please note that if one line has 2 or more parameters, the line will be removed when any parameter is empty. Multipal parameters in one line have the relationship of "and".
+Suffix "@" means the parameter value will be escaped as a column or table name when the parameter is filled.
+
+> For example, if the value of param is "user", then it is escaped as \`user\` when filled.
+
+#### if, for, foreach blocks
+
+>Very like JavaScript code except you need replace the parameter as @param.
+
+```sql
+#select test.sql1:
+    select * from user where 1=1
+    and id=@id
+    and userName=@userName
+    and password=@password
+    and email=@email
+    #if(@ids && @ids.length > 0){
+        #for(var i = 0; i < @ids.length; i++) {
+            or id= @ids[i]
+        }
+    }
+```
 
 #### Include a SQL by SQLID
 
-> \#include SQLID
+> \#include(SQLID)
 
 The SQL with SQLID will be replace in the position of the #include line.
 
 ```sql
 #sql common.paging:
-    order by orderBy?? limit from?, to?
+    order by @orderBy@ limit @from, @to
 
 #select user.query:
     select * from user where 1=1
-        and id=id?
-        and userName=userName?
-        and password=password?
-        and email=email?
-        and id in (ids?)
-        #include common.paging
+        and id=@id
+        and userName=@userName
+        and password=@password
+        and email=@email
+        and id in (@ids)
+        #include(common.paging)
 ```
 
 ## API Reference
@@ -135,7 +160,7 @@ select * from user where 1=1 and id in ('1', 2, 3) order by `userName` limit 0, 
 #### Native SQL query wrapper for [mysqljs/mysql](https://github.com/mysqljs/mysql)
 
 ```js
-sqlMap.dQuery("select * from user where id in (?) order by ?? limit ? to ?", [
+sqlMap.query("select * from user where id in (?) order by ?? limit ? to ?", [
         ['1', 2, 3],
         'userName',
         0,
@@ -149,4 +174,4 @@ sqlMap.dQuery("select * from user where id in (?) order by ?? limit ? to ?", [
 
 ## Example
 
-> Please refer the test/test.js.
+> Please refer the test/test-promise.js.

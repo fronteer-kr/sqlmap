@@ -8,9 +8,9 @@
 	and password=@password
 	and email=@email
 	#if(@ids && @ids.length > 0){
-		and (false #for(var i = 0; i < @ids.length; i++) {
+		#for(var i = 0; i < @ids.length; i++) {
 			or id= @ids[i]
-		})
+		}
 	}
 	#include(test.common.sql)
 
