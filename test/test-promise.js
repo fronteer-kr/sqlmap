@@ -17,7 +17,7 @@ try {
         var results = await sqlMap.queryAsync('select * from user where id in (?)', [[1, 2, 3]]);
         console.log(results[0]);
 
-        await SqlMap.loadSqlMapsAsync(Path.resolve(__dirname, 'parser'));
+        await SqlMap.loadSqlMapsAsync(Path.resolve(__dirname));
 
         results = await sqlMap.dQueryAsync('test.sql1', {
             userName: 'root',

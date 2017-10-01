@@ -1,13 +1,16 @@
 var fs = require('fs');
 var mysql = require('mysql');
-var SqlMapLoader = require('./lib/loader/SqlMapLoader');
-const { SqlMapSqlLineType } = require('./lib/parser/SqlMapSql');
-
-global.sqlMap = {};
+var antlr4 = require('antlr4');
+const { SqlMapLexer } = require('./lib/parser/SqlMapLexer');
+const { SqlMapParser } = require('./lib/parser/SqlMapParser');
+const { MySqlMapParserVisitor } = require('./lib/parser/MySqlMapParserVisitor');
+const { SqlMapLoader } = require('./lib/loader/SqlMapLoader');
+const { SqlMapHelper } = require('./lib/parser/SqlMapHelper');
 
 function SqlMap(masterConfig, slaveConfigs, poolClusterConfig) {
     this.poolCluster = mysql.createPoolCluster(poolClusterConfig);
-    this.poolCluster.add('MASTER', masterConfig); // add a named configuration
+    // add named configuration
+    this.poolCluster.add('MASTER', masterConfig);
     this.hasSlave = false;
     if (Array.isArray(slaveConfigs)) {
         for (var i = 0; i < slaveConfigs.length; i++) {
@@ -20,14 +23,41 @@ function SqlMap(masterConfig, slaveConfigs, poolClusterConfig) {
     }
 }
 
-function querySql(SqlMap, sql, values, callback) {
-    console.log(SqlMap.hasSlave ? 'Slave' : 'Master');
+SqlMap.parse = function (input) {
+    var chars = new antlr4.InputStream(input);
+    var lexer = new SqlMapLexer(chars);
+    var tokens = new antlr4.CommonTokenStream(lexer);
+    var parser = new SqlMapParser(tokens);
+    parser.buildParseTrees = true;
+    var tree = parser.root();
+    var visitor = new MySqlMapParserVisitor();
+    visitor.visitRoot(tree);
+}
+
+SqlMap.emitSql = function (sqlId, _paramObject) {
+    var _sqlArr = [];
+    var _values = [];
+
+    var func = SqlMapHelper.getSqlFunction(sqlId);
+    if (func) {
+        func(_paramObject, _sqlArr, _values);
+        return {
+            func: func.name,
+            sql: _sqlArr.join(''),
+            values: _values
+        };
+    }
+    throw new Error('Sql map \'' + sqlId + '\' not found!');
+}
+
+function querySql(sqlMap, sql, values, callback, isQuery) {
+    console.log(sqlMap.hasSlave ? 'Slave' : 'Master');
     var t1 = new Date();
     var pool = null;
-    if (SqlMap.hasSlave) {
-        pool = SqlMap.poolCluster.of('SLAVE*', 'RANDOM');
+    if (isQuery && sqlMap.hasSlave) {
+        pool = sqlMap.poolCluster.of('SLAVE*', 'RANDOM');
     } else {
-        pool = SqlMap.poolCluster.of('*');
+        pool = sqlMap.poolCluster.of('MASTER');
     }
     pool.query(sql, values, function (err, results, fields) {
         var self = this;
@@ -45,63 +75,26 @@ function querySql(SqlMap, sql, values, callback) {
     });
 }
 
-function getSqlAndValues(sqlId, values) {
-    /** @type {SqlMapSql} */
-    var sql = global.sqlMap[sqlId];
-    if (!sql) throw new Error('Sql \'' + sqlId + '\' not found!');
-    var strArr = [];
-    var valueArr = [];
-    for (var i = 0; i < sql.lines.length; i++) {
-        /** @type {SqlMapSqlLine} */
-        var line = sql.lines[i];
-        if (line.type === SqlMapSqlLineType.STATIC) {
-            strArr.push(line.text);
-        }
-
-        if (line.type === SqlMapSqlLineType.DYNAMIC) {
-            var all = true;
-            var varr = [];
-            for (var j = 0; j < line.params.length; j++) {
-                /** @type {SqlMapSqlParam} */
-                var param = line.params[j];
-                var value = values[param.name];
-                if (value === undefined || value == null) {
-                    all = false;
-                    break;
-                } else {
-                    varr.push(value);
-                }
-            }
-            if (all) {
-                strArr.push(line.text);
-                valueArr = valueArr.concat(varr);
-            }
-        }
-
-        if (line.type === SqlMapSqlLineType.INCLUDE) {
-            var ret = getSqlAndValues(line.text, values);
-            strArr = strArr.concat(ret.sql);
-            valueArr = valueArr.concat(ret.values);
-        }
-    }
-    return { sql: strArr, values: valueArr };
-}
-
 SqlMap.prototype.query = function (sql, values, callback) {
-    if (typeof sql !== 'string') throw new Error('Parameter \'sql\' requires a string!');
+    if (typeof sql !== 'string') {
+        throw new Error('Parameter \'sql\' requires a string!');
+    }
     querySql(this, sql, values, callback);
 };
 
 SqlMap.prototype.dQuery = function (sqlId, values, callback) {
-    if (typeof sqlId !== 'string') throw new Error('Parameter \'sql\' requires a string!');
+    if (typeof sqlId !== 'string') {
+        throw new Error('Parameter \'sql\' requires a string!');
+    }
     /* eslint-disable */
-    if (values && values !== new Object(values)) throw new Error('Parameter \'values\' requires an object or empty!');
+    if (values && values !== new Object(values)) {
+        throw new Error('Parameter \'values\' requires an object or empty!');
+    }
     /* eslint-enable */
     console.log('Sql id: ' + sqlId);
-    var params = getSqlAndValues(sqlId, values);
-    var sql = params.sql.join(' ');
-    console.error(sql);
-    querySql(this, sql, params.values, callback);
+    var sql = SqlMap.emitSql(sqlId, values);
+    console.error(sql.sql);
+    querySql(this, sql.sql, sql.values, callback, sql.func.startsWith('select'));
 };
 
 SqlMap.prototype.destroy = function (callback) {
@@ -113,13 +106,13 @@ SqlMap.loadSqlMaps = function (path, callback) {
         if (err) throw err;
         if (stat) {
             if (stat.isFile()) {
-                SqlMapLoader.loadSqlMapFile(path, global.sqlMap, callback);
+                SqlMapLoader.loadSqlMapFile(path, SqlMap.parse, callback);
             }
             if (stat.isDirectory()) {
-                SqlMapLoader.loadSqlMapDir(path, global.sqlMap, callback);
+                SqlMapLoader.loadSqlMapDir(path, SqlMap.parse, callback);
             }
         }
     });
-}
+};
 
 module.exports.SqlMap = SqlMap;

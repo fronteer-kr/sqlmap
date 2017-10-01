@@ -7,6 +7,24 @@
     "rules": {
         "semi": "off",
         "indent": "off",
-        "space-before-function-paren": "off"
+        "space-before-function-paren": "off",
+        "no-unused-vars": "warn",
+        "no-multiple-empty-lines": "warn",
+        "no-tabs": "warn",
+        "eol-last": "warn",
+        "no-trailing-spaces": "warn",
+        "quotes": "warn",
+        "space-in-parens": "warn",
+        "space-infix-ops": "warn",
+        "space-unary-ops": "warn",
+        "keyword-spacing": "warn",
+        "key-spacing": "warn",
+        "no-mixed-spaces-and-tabs": "warn",
+        "padded-blocks": "warn",
+        "comma-spacing": "warn",
+        "brace-style": "warn",
+        "eqeqeq": "warn",
+        "no-throw-literal": "warn",
+        "no-redeclare": "warn"
     }
 }

@@ -9,7 +9,7 @@ var masterConfig = {
 };
 var sqlMap = new SqlMap(masterConfig);
 
-SqlMap.loadSqlMaps(Path.resolve(__dirname, 'parser'),
+SqlMap.loadSqlMaps(Path.resolve(__dirname),
     function (err, map) {
         if (err) throw err;
 
