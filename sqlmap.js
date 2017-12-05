@@ -83,8 +83,9 @@ SqlMap.prototype.query = function (sql, values, callback) {
 };
 
 SqlMap.prototype.queryAsync = function (sql, values) {
+    var self = this;
     return new Promise(function (resolve, reject) {
-        this.query(sql, values, function (err, result) {
+        self.query(sql, values, function (err, result) {
             if (err) return reject(err);
             return resolve(result);
         });
@@ -107,8 +108,9 @@ SqlMap.prototype.dQuery = function (sqlId, values, callback) {
 };
 
 SqlMap.prototype.dQueryAsync = function (sqlId, values) {
+    var self = this;
     return new Promise(function (resolve, reject) {
-        this.dQuery(sqlId, values, function (err, result) {
+        self.dQuery(sqlId, values, function (err, result) {
             if (err) return reject(err);
             return resolve(result);
         });
@@ -120,8 +122,9 @@ SqlMap.prototype.destroy = function (callback) {
 };
 
 SqlMap.prototype.destroyAsync = function () {
+    var self = this;
     return new Promise(function (resolve, reject) {
-        this.destroy(function (err, result) {
+        self.destroy(function (err, result) {
             if (err) return reject(err);
             return resolve(result);
         });
@@ -143,8 +146,9 @@ SqlMap.loadSqlMaps = function (path, callback) {
 };
 
 SqlMap.loadSqlMapsAsync = function (path) {
+    var self = this;
     return new Promise(function (resolve, reject) {
-        this.loadSqlMaps(path, function (err, result) {
+        self.loadSqlMaps(path, function (err, result) {
             if (err) return reject(err);
             return resolve(result);
         });
