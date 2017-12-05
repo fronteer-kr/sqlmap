@@ -4,6 +4,7 @@
     "version": "0.1.2",
     "license": "MIT",
     "main": "sqlmap.js",
+    "types": "sqlmap.d.ts",
     "author": {
         "name": "guoqiang.yu",
         "email": "nxshuiguo@163.com",
