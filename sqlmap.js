@@ -82,6 +82,15 @@ SqlMap.prototype.query = function (sql, values, callback) {
     querySql(this, sql, values, callback);
 };
 
+SqlMap.prototype.queryAsync = function (sql, values) {
+    return new Promise(function (resolve, reject) {
+        this.query(sql, values, function (err, result) {
+            if (err) return reject(err);
+            return resolve(result);
+        });
+    });
+}
+
 SqlMap.prototype.dQuery = function (sqlId, values, callback) {
     if (typeof sqlId !== 'string') {
         throw new Error('Parameter \'sql\' requires a string!');
@@ -97,9 +106,27 @@ SqlMap.prototype.dQuery = function (sqlId, values, callback) {
     querySql(this, sql.sql, sql.values, callback, sql.func.startsWith('select'));
 };
 
+SqlMap.prototype.dQueryAsync = function (sqlId, values) {
+    return new Promise(function (resolve, reject) {
+        this.dQuery(sqlId, values, function (err, result) {
+            if (err) return reject(err);
+            return resolve(result);
+        });
+    });
+}
+
 SqlMap.prototype.destroy = function (callback) {
     this.poolCluster.end(callback);
 };
+
+SqlMap.prototype.destroyAsync = function () {
+    return new Promise(function (resolve, reject) {
+        this.destroy(function (err, result) {
+            if (err) return reject(err);
+            return resolve(result);
+        });
+    });
+}
 
 SqlMap.loadSqlMaps = function (path, callback) {
     fs.stat(path, function (err, stat) {
@@ -114,5 +141,14 @@ SqlMap.loadSqlMaps = function (path, callback) {
         }
     });
 };
+
+SqlMap.loadSqlMapsAsync = function (path) {
+    return new Promise(function (resolve, reject) {
+        this.loadSqlMaps(path, function (err, result) {
+            if (err) return reject(err);
+            return resolve(result);
+        });
+    });
+}
 
 module.exports.SqlMap = SqlMap;
