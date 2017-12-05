@@ -30,6 +30,7 @@
         "lib/",
         "LICENSE",
         "README.md",
+        "sqlmap.d.ts",
         "sqlmap.js"
     ],
     "engines": {
