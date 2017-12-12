@@ -8,6 +8,7 @@ const { SqlMapLoader } = require('./lib/loader/SqlMapLoader');
 const { SqlMapHelper } = require('./lib/parser/SqlMapHelper');
 
 function SqlMap(masterConfig, slaveConfigs, poolClusterConfig) {
+    this.debug = false;
     this.poolCluster = mysql.createPoolCluster(poolClusterConfig);
     // add named configuration
     this.poolCluster.add('MASTER', masterConfig);
@@ -51,7 +52,7 @@ SqlMap.emitSql = function (sqlId, _paramObject) {
 }
 
 function querySql(sqlMap, sql, values, callback, isQuery) {
-    console.log(sqlMap.hasSlave ? 'Slave' : 'Master');
+    sqlMap.log(sqlMap.hasSlave ? 'Slave' : 'Master');
     var t1 = new Date();
     var pool = null;
     if (isQuery && sqlMap.hasSlave) {
@@ -66,13 +67,19 @@ function querySql(sqlMap, sql, values, callback, isQuery) {
             else throw err;
         } else {
             var t2 = new Date();
-            console.error(self.sql);
-            console.log('Time: ' + (t2.getUTCMilliseconds() - t1.getUTCMilliseconds()) + ' ms.');
+            sqlMap.log(self.sql);
+            sqlMap.log('Time: ' + (t2.getUTCMilliseconds() - t1.getUTCMilliseconds()) + ' ms.');
             if (callback) {
                 callback(null, results, fields);
             }
         }
     });
+}
+
+SqlMap.prototype.log = function (msg) {
+    if (this.debug) {
+        console.log(msg);
+    }
 }
 
 SqlMap.prototype.query = function (sql, values, callback) {
@@ -101,7 +108,8 @@ SqlMap.prototype.dQuery = function (sqlId, values, callback) {
         throw new Error('Parameter \'values\' requires an object or empty!');
     }
     /* eslint-enable */
-    console.log('Sql id: ' + sqlId);
+    this.log('-------------------------');
+    this.log('Sql id: ' + sqlId);
     var sql = SqlMap.emitSql(sqlId, values);
     console.error(sql.sql);
     querySql(this, sql.sql, sql.values, callback, sql.func.startsWith('select'));
