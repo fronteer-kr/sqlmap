@@ -131,24 +131,25 @@ SqlMap.prototype.destroyAsync = function () {
     });
 }
 
-SqlMap.loadSqlMaps = function (path, callback) {
-    fs.stat(path, function (err, stat) {
-        if (err) throw err;
-        if (stat) {
-            if (stat.isFile()) {
-                SqlMapLoader.loadSqlMapFile(path, SqlMap.parse, callback);
-            }
-            if (stat.isDirectory()) {
-                SqlMapLoader.loadSqlMapDir(path, SqlMap.parse, callback);
-            }
+function _loadSqlMaps(path, callback) {
+    var stat = fs.statSync(path);
+    if (stat) {
+        if (stat.isFile()) {
+            SqlMapLoader.loadSqlMapFile(path, SqlMap.parse, callback);
         }
-    });
+        if (stat.isDirectory()) {
+            SqlMapLoader.loadSqlMapDir(path, SqlMap.parse, callback);
+        }
+    }
 };
 
+SqlMap.loadSqlMaps = function (path) {
+    _loadSqlMaps(path, null);
+}
+
 SqlMap.loadSqlMapsAsync = function (path) {
-    var self = this;
     return new Promise(function (resolve, reject) {
-        self.loadSqlMaps(path, function (err, result) {
+        _loadSqlMaps(path, function (err, result) {
             if (err) return reject(err);
             return resolve(result);
         });

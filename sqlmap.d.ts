@@ -11,7 +11,7 @@ export declare class SqlMap {
     dQueryAsync(sqlId: string, values: any): any;
     destroyAsync(): void;
 
-    static loadSqlMaps(path: string, callback: any): void;
+    static loadSqlMaps(path: string): void;
     static loadSqlMapsAsync(path: string): void;
     static emitSql(sqlId: string, paramObject: any): any;
     static parse(input: string): any;
